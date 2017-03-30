@@ -1,5 +1,5 @@
 import unittest
-from main import main
+from main import *
 
 def test_main():
-	main()
+pass

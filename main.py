@@ -1,6 +1,14 @@
-def main():
-	print('It is a dummy main.')
+#!/usr/bin/python
+from gui import *
+import sys
 
-if __name__ == '__main__':
-	pass
-	main()
+def main():
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
