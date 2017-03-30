@@ -2,4 +2,4 @@ import unittest
 from main import *
 
 def test_main():
-    pass
+	print("This is a dummy test for travis")
