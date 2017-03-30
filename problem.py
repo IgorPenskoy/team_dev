@@ -1,16 +1,21 @@
-class TransportProblem:
-	def __init__(self):
+class Problem:
+	def __init__(self, customers = None, providers = None, rates = None):
+		self.customers = customers
+		self.providers = providers
+		self.rates = rates
 		self.common_costs = None
-		self.customers = None
 		self.graph = None
-		self.providers = None
 		self.table = None
+		self.create_table()
 
+	def solve(self):
+		return 0
+		
+	def create_table(self):
+		pass
+		
 	def check_closeness(self):
 		return True
 
-	def correct_closeness(self, rates):
+	def correct_closeness(self):
 		pass
-
-	def solve(self, rates, method):
-		return 0
