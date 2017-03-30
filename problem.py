@@ -1,3 +1,5 @@
+from table_item import *
+
 class Problem:
 	def __init__(self, customers = None, providers = None, rates = None):
 		self.customers = customers
