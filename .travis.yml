@@ -1,5 +1,7 @@
 language: python
 python:
- - 3.5
+ - 3.6.1
+os:
+ - windows
 install: pip3 install PyQt5 pytest pytest-qt
 script: pytest
