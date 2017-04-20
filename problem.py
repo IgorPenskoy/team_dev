@@ -7,14 +7,32 @@ class Problem:
 		self.rates = rates
 		self.common_costs = None
 		self.table = None
+		self.width = None
+		self.height = None
+		self.basis_item_count = 0
 		self.build_table()
 
 	def solve(self):
 		return 0
 		
 	def build_table(self):
-		pass
-	
+		if self.customers is None:
+			self.width = 0
+		else:
+			self.width = len(self.customers)
+		if self.providers is None:
+			self.height = 0
+		else:
+			self.height = len(self.providers)
+		self.table = [[TableItem() for x in range(self.width)] for y in range(self.height)]
+		self.basis_item_count = 0
+		try:
+			for i in range(self.height):
+				for j in range(self.width):
+					self.items[i][j].rate = self.rates[i][j]
+		except IndexError:
+			print('Rates table is not in appropriate size')
+
 	def make_closeness(self):
 		pass
 

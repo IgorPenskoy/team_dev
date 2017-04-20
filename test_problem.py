@@ -9,7 +9,7 @@ class TestProblem(unittest.TestCase):
 	def test_build_table(self):
 		problem = Problem()
 		problem.build_table()
-		self.assertIsNone(problem.table)
+		self.assertEqual(problem.table, [])
 
 	def test_make_closeness(self):
 		problem = Problem()
@@ -22,7 +22,7 @@ class TestProblem(unittest.TestCase):
 	def test_make_basic_plan(self):
 		problem = Problem()
 		problem.make_basic_plan()
-		self.assertIsNone(problem.table)
+		self.assertEqual(problem.table, [])
 
 	def test_fix_degeneracy(self):
 		problem = Problem()
