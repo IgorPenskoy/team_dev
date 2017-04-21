@@ -29,7 +29,7 @@ class Problem:
 		try:
 			for i in range(self.height):
 				for j in range(self.width):
-					self.items[i][j].rate = self.rates[i][j]
+					self.table[i][j].rate = self.rates[i][j]
 		except IndexError:
 			print('Rates table is not in appropriate size')
 
@@ -37,7 +37,7 @@ class Problem:
 		pass
 
 	def check_closeness(self):
-		return True
+		return sum(self.providers) - sum(self.customers)
 		
 	def make_basic_plan(self):
 		pass

@@ -16,8 +16,8 @@ class TestProblem(unittest.TestCase):
 		problem.make_closeness()
 
 	def test_check_closeness(self):
-		problem = Problem()
-		self.assertTrue(problem.check_closeness())
+		problem = Problem([10, 5, 3], [9, 3, 6], [[1,1,1],[1,1,1],[1,1,1]])
+		self.assertEqual(problem.check_closeness(), 0)
 		
 	def test_make_basic_plan(self):
 		problem = Problem()
