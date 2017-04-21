@@ -20,9 +20,8 @@ class TestProblem(unittest.TestCase):
 		self.assertEqual(problem.check_closeness(), 0)
 		
 	def test_make_basic_plan(self):
-		problem = Problem()
+		problem = Problem([10, 5, 3], [9, 3, 6], [[1,1,1],[1,1,1],[1,1,1]])
 		problem.make_basic_plan()
-		self.assertEqual(problem.table, [])
 
 	def test_fix_degeneracy(self):
 		problem = Problem()

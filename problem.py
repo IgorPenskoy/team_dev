@@ -1,4 +1,5 @@
 from table_item import *
+from math import inf
 
 class Problem:
 	def __init__(self, customers = None, providers = None, rates = None):
@@ -47,7 +48,26 @@ class Problem:
 		return sum(self.providers) - sum(self.customers)
 		
 	def make_basic_plan(self):
-		pass
+		p = list()
+		p.extend(self.providers)
+		c = list()
+		c.extend(self.customers)
+		rate_min = 0
+		while rate_min != inf:
+			rate_min = inf
+			i_min = 0
+			j_min = 0
+			for i in range(self.height):
+				for j in range(self.width):
+					if p[i] != 0 and c[j] != 0 and self.table[i][j].rate < rate_min:
+						rate_min = self.table[i][j].rate
+						i_min = i
+						j_min = j
+			if rate_min != inf:
+				supply = min(p[i_min], c[j_min])
+				self.table[i_min][j_min].supply = supply
+				p[i_min] -= supply
+				c[j_min] -= supply
 
 	def fix_degeneracy(self):
 		pass
