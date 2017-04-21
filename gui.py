@@ -1,4 +1,5 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui,QtWidgets
+from problem import *
 
 class Ui_MainWindow(object):
 	def setupUi(self, MainWindow):
@@ -137,6 +138,63 @@ class Ui_MainWindow(object):
 		self.customers_tablewidget.setColumnCount(self.customers_spinbox.value())
 		self.rates_tablewidget.setColumnCount(self.customers_spinbox.value())
 		self.traffic_tablewidget.setColumnCount(self.customers_spinbox.value())
+
+	def data_check(self):
+		flag = True
+		for i in range(self.providers_tablewidget.rowCount()):
+			try:
+				numb = float(self.providers_tablewidget.item(i, 0).text())
+				if numb < 0:
+					flag = False
+			except ValueError:
+				flag = False
+			except TypeError:
+				flag = False
+			except AttributeError:
+				flag = False
+		for i in range(self.customers_tablewidget.columnCount()):
+			try:
+				numb = float(self.providers_tablewidget.item(i, 0).text())
+				if numb < 0:
+					flag = False
+			except ValueError:
+				flag = False
+			except TypeError:
+				flag = False
+			except AttributeError:
+				flag = False
+		for i in range(self.rates_tablewidget.rowCount()):
+			for j in range(self.rates_tablewidget.columnCount()):
+				try:
+					numb = float(self.rates_tablewidget.item(i, j).text())
+					if numb < 0:
+						flag = False
+				except ValueError:
+					flag = False
+				except TypeError:
+					flag = False
+				except AttributeError:
+					flag = False
+		return flag
+
+	def calculation(self):
+		self.alert_label.setText("")
+		rates = list()
+		providers = list()
+		customers = list()
+		if self.data_check():
+			for i in range(self.providers_tablewidget.rowCount()):
+				providers.append(float(self.providers_tablewidget.item(i, 0).text()))
+			for i in range(self.customers_tablewidget.columnCount()):
+				customers.append(float(self.customers_tablewidget.item(0, i).text()))
+			for i in range(self.rates_tablewidget.rowCount()):
+				tmp = list()
+				for j in range(self.rates_tablewidget.columnCount()):
+					tmp.append(float(self.rates_tablewidget.item(i, j).text()))
+					rates.append(tmp)
+			problem = Problem(providers, customers, rates)
+		else:
+			self.alert_label.setText("НЕКОРРЕКТНЫЕ ДАННЫЕ")
 
 	def retranslateUi(self, MainWindow):
 		_translate = QtCore.QCoreApplication.translate
