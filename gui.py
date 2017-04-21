@@ -128,6 +128,7 @@ class Ui_MainWindow(object):
 		QtCore.QMetaObject.connectSlotsByName(MainWindow)
 		self.providers_spinbox.valueChanged.connect(self.providers_count_change)
 		self.customers_spinbox.valueChanged.connect(self.customers_count_change)
+		self.calculation_pushbutton.clicked.connect(self.calculation)
 
 	def providers_count_change(self):
 		self.providers_tablewidget.setRowCount(self.providers_spinbox.value())
