@@ -12,7 +12,7 @@ class TestProblem(unittest.TestCase):
 		self.assertEqual(problem.table, [])
 
 	def test_make_closeness(self):
-		problem = Problem()
+		problem = Problem([10, 5, 3], [9, 3, 6], [[1,1,1],[1,1,1],[1,1,1]])
 		problem.make_closeness()
 
 	def test_check_closeness(self):

@@ -34,7 +34,14 @@ class Problem:
 			print('Rates table is not in appropriate size')
 
 	def make_closeness(self):
-		pass
+		balance = self.check_closeness()
+		if balance > 0:
+			self.customers.append(balance)
+			for i in range(len(self.rates)):
+				self.rates[i].append(0)
+		elif balance < 0:
+			self.providers.append(-balance)
+			self.rates.append([0 for x in range(len(self.customers))])
 
 	def check_closeness(self):
 		return sum(self.providers) - sum(self.customers)
