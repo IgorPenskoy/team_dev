@@ -125,7 +125,19 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
- 
+		self.providers_spinbox.valueChanged.connect(self.providers_count_change)
+		self.customers_spinbox.valueChanged.connect(self.customers_count_change)
+
+    def providers_count_change(self):
+        self.providers_tablewidget.setRowCount(self.providers_spinbox.value())
+        self.rates_tablewidget.setRowCount(self.providers_spinbox.value())
+        self.traffic_tablewidget.setRowCount(self.providers_spinbox.value())
+
+    def customers_count_change(self):
+        self.customers_tablewidget.setColumnCount(self.customers_spinbox.value())
+        self.rates_tablewidget.setColumnCount(self.customers_spinbox.value())
+        self.traffic_tablewidget.setColumnCount(self.customers_spinbox.value())
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Транспортная задача"))
