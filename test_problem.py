@@ -63,14 +63,20 @@ class TestProblem(unittest.TestCase):
 		problem.make_closeness()
 		self.assertEqual(problem.customers, [25, 15, 50])
 		self.assertEqual(problem.providers, [30, 40, 20])
-		self.assertEqual(problem.rates, [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		rates_result = [[2, 4, 1], [1, 3, 2], [5, 2, 4]]
+		for i in range(problem.height):
+			for j in range(problem.width):
+				self.assertEqual(problem.table[i][j].rate, rates_result[i][j])
 
 	def test_make_closeness_2(self):
 		problem = Problem([25, 15, 50], [30, 45, 25], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
 		problem.make_closeness()
 		self.assertEqual(problem.customers, [25, 15, 50, 10])
 		self.assertEqual(problem.providers, [30, 45, 25])
-		self.assertEqual(problem.rates, [[2, 4, 1, 0], [1, 3, 2, 0], [5, 2, 4, 0]])
+		rates_result = [[2, 4, 1, 0], [1, 3, 2, 0], [5, 2, 4, 0]]
+		for i in range(problem.height):
+			for j in range(problem.width):
+				self.assertEqual(problem.table[i][j].rate, rates_result[i][j])
 
 	def test_make_closeness_3(self):
 		problem = Problem([25, 20, 55], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
@@ -78,6 +84,10 @@ class TestProblem(unittest.TestCase):
 		self.assertEqual(problem.customers, [25, 20, 55])
 		self.assertEqual(problem.providers, [30, 40, 20, 10])
 		self.assertEqual(problem.rates, [[2, 4, 1], [1, 3, 2], [5, 2, 4], [0, 0, 0]])	
+		rates_result = [[2, 4, 1], [1, 3, 2], [5, 2, 4], [0, 0, 0]]
+		for i in range(problem.height):
+			for j in range(problem.width):
+				self.assertEqual(problem.table[i][j].rate, rates_result[i][j])
 
 	def test_check_closeness_1(self):
 		problem = Problem([10, 5, 3], [9, 3, 6], [[1,1,1],[1,1,1],[1,1,1]])

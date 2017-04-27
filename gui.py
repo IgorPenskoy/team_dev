@@ -137,8 +137,17 @@ class Ui_MainWindow(object):
 		self.traffic_tablewidget.setColumnCount(self.customers_spinbox.value())
 
 	def random_fill(self):
+		self.providers_tablewidget.setRowCount(self.providers_spinbox.value())
+		self.rates_tablewidget.setRowCount(self.providers_spinbox.value())
+		self.traffic_tablewidget.setRowCount(self.providers_spinbox.value())
+		self.customers_tablewidget.setColumnCount(self.customers_spinbox.value())
+		self.rates_tablewidget.setColumnCount(self.customers_spinbox.value())
+		self.traffic_tablewidget.setColumnCount(self.customers_spinbox.value())
 		self.rates_tablewidget.setRowCount(self.providers_tablewidget.rowCount())
 		self.rates_tablewidget.setColumnCount(self.customers_tablewidget.columnCount())
+		for i in range(self.traffic_tablewidget.rowCount()):
+			for j in range(self.traffic_tablewidget.columnCount()):
+				self.traffic_tablewidget.setItem(i, j, QtWidgets.QTableWidgetItem('-'))
 		for i in range(self.providers_tablewidget.rowCount()):
 			self.providers_tablewidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str(random.randint(1, 100))))
 		for i in range(self.customers_tablewidget.columnCount()):
@@ -199,8 +208,30 @@ class Ui_MainWindow(object):
 				tmp = list()
 				for j in range(self.rates_tablewidget.columnCount()):
 					tmp.append(float(self.rates_tablewidget.item(i, j).text()))
-					rates.append(tmp)
-			problem = Problem(providers, customers, rates)
+				rates.append(tmp)
+			problem = Problem(customers, providers, rates)
+			problem.solve()
+			self.traffic_tablewidget.setRowCount(problem.height)
+			self.traffic_tablewidget.setColumnCount(problem.width)
+			for i in range(self.traffic_tablewidget.rowCount()):
+				for j in range(self.traffic_tablewidget.columnCount()):
+					if problem.table[i][j].supply is None:
+						self.traffic_tablewidget.setItem(i, j, QtWidgets.QTableWidgetItem('-'))
+					else:
+						self.traffic_tablewidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(problem.table[i][j].supply)))
+			if problem.width > self.rates_tablewidget.columnCount():
+				self.rates_tablewidget.setColumnCount(problem.width)
+				for i in range(self.rates_tablewidget.rowCount()):
+					self.rates_tablewidget.setItem(i, problem.width - 1, QtWidgets.QTableWidgetItem('0'))
+				self.customers_tablewidget.setColumnCount(problem.width)
+				self.customers_tablewidget.setItem(0, problem.width - 1, QtWidgets.QTableWidgetItem(str(problem.customers[problem.width - 1])))
+			if problem.height > self.rates_tablewidget.rowCount():
+				self.rates_tablewidget.setRowCount(problem.height)
+				for i in range(self.rates_tablewidget.columnCount()):
+					self.rates_tablewidget.setItem(problem.height - 1, i, QtWidgets.QTableWidgetItem('0'))
+				self.providers_tablewidget.setRowCount(problem.height)
+				self.providers_tablewidget.setItem(0, problem.height - 1, QtWidgets.QTableWidgetItem(str(problem.providers[problem.height - 1])))
+			self.commoncosts_label.setText('Общие затраты: ' + str(problem.common_costs))
 		else:
 			self.alert_label.setText("НЕКОРРЕКТНЫЕ ДАННЫЕ")
 
