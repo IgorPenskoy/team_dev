@@ -230,5 +230,15 @@ class TestProblem(unittest.TestCase):
 		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
 		self.assertEqual(problem.get_expenses(), 0)
 
+	def test_solve_1(self):
+		problem = Problem([25, 20, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		self.assertEqual(problem.solve(), 120)
+		self.assertEqual(problem.get_expenses(), 125)
+
+	def test_solve_2(self):
+		problem = Problem([30, 30], [30, 30], [[1, 1], [1, 1]])
+		self.assertEqual(problem.solve(), 0)
+		self.assertEqual(problem.get_expenses(), 60)
+
 if __name__ == '__main__':
     unittest.main()
