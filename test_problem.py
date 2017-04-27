@@ -126,7 +126,7 @@ class TestProblem(unittest.TestCase):
 		self.assertTrue(problem.check_optimality())
 		
 	def test_get_plan_potentials(self):
-		problem = Problem()
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
 		problem.get_plan_potentials()
 		
 	def test_get_expenses(self):

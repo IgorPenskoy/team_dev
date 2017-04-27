@@ -90,7 +90,22 @@ class Problem:
 		return True
 		
 	def get_plan_potentials(self):
-		pass
+		providers_potential = [None for x in range(self.height)]
+		customers_potential = [None for x in range(self.width)]
+		providers_potential[0] = 0
+		flag = 1
+		while flag:
+			flag = 0
+			for i in range(self.height):
+				for j in range(self.width):
+					if self.table[i][j].supply is not None:
+						if providers_potential[i] is None and customers_potential[j] is None:
+							flag = 1
+						elif providers_potential[i] is not None and customers_potential[j] is None:
+							customers_potential[j] = self.table[i][j].rate - providers_potential[i]
+						elif providers_potential[i] is None and customers_potential[j] is not None:
+							providers_potential[i] = self.table[i][j].rate - customers_potential[j]
+		return providers_potential, customers_potential
 		
 	def get_expenses(self):
 		return 0
