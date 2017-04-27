@@ -163,6 +163,10 @@ class Problem:
 						elif providers_potential[i] is None and customers_potential[j] is not None:
 							providers_potential[i] = self.table[i][j].rate - customers_potential[j]
 		return providers_potential, customers_potential
-		
+
 	def get_expenses(self):
-		return 0
+		result = 0
+		for i in range(self.height):
+			for j in range(self.width):
+				result += self.items[i][j].get_traffic()
+		return result
