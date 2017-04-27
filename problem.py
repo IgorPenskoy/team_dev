@@ -87,8 +87,21 @@ class Problem:
 		pass
 	
 	def check_optimality(self):
-		return True
-		
+		providers_potential, customers_potential = self.get_plan_potentials()
+		for i in range(len(providers_potential)):
+			if providers_potential[i] is None:
+				providers_potential[i] = 0
+		for i in range(len(customers_potential)):
+			if customers_potential[i] is None:
+				customers_potential[i] = 0
+		flag = True
+		for i in range(self.height):
+			for j in range(self.width):
+				self.table[i][j].delta = self.table[i][j].rate - (providers_potential[i] + customers_potential[j])
+				if self.table[i][j].delta < 0:
+					flag = False
+		return flag
+
 	def get_plan_potentials(self):
 		providers_potential = [None for x in range(self.height)]
 		customers_potential = [None for x in range(self.width)]
