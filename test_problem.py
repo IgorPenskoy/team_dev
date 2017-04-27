@@ -119,13 +119,60 @@ class TestProblem(unittest.TestCase):
 					flag = False
 		self.assertTrue(flag)
 
-	def test_fix_degeneracy(self):
-		problem = Problem()
+	def test_fix_degeneracy_1(self):
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		problem.make_basic_plan()
 		problem.fix_degeneracy()
-		
-	def test_check_degeneracy(self):
-		problem = Problem()
-		self.assertEqual(problem.check_degeneracy(), -1)
+		items_result = [[25, 5, None], [None, 10, 30], [None, None, 20]]
+		flag = True
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply != items_result[i][j]:
+					flag = False
+		self.assertTrue(flag)
+
+	def test_fix_degeneracy_2(self):
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		problem.make_basic_plan()
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply is None:
+					problem.table[i][j].supply = 0
+		problem.fix_degeneracy()
+		items_result = [[25, 5, None], [None, 10, 30], [None, None, 20]]
+		flag = True
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply != items_result[i][j]:
+					flag = False
+		self.assertTrue(flag)
+
+	def test_fix_degeneracy_3(self):
+		problem = Problem([25, 15, 50], [30, 0, 60], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		problem.make_basic_plan()
+		problem.fix_degeneracy()
+		items_result = [[25, 5, EPSILON], [None, None, None], [None, 10, 50]]
+		flag = True
+		for i in range(problem.height):
+			for j in range(problem.width):
+				print(problem.table[i][j].supply)
+		problem.table
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply != items_result[i][j]:
+					flag = False
+		self.assertTrue(flag)		
+		self.assertEqual(problem.providers[0], 30 + EPSILON)
+		self.assertEqual(problem.customers[2], 50 + EPSILON)
+
+	def test_check_degeneracy_1(self):
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		problem.make_basic_plan()
+		self.assertEqual(problem.check_degeneracy(), 0)
+
+	def test_check_degeneracy_2(self):
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		self.assertEqual(problem.check_degeneracy(), 5)
 
 	def test_make_optimality(self):
 		problem = Problem()
