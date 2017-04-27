@@ -49,26 +49,15 @@ class Problem:
 		return sum(self.providers) - sum(self.customers)
 		
 	def make_basic_plan(self):
-		p = list()
-		p.extend(self.providers)
-		c = list()
-		c.extend(self.customers)
-		rate_min = 0
-		while rate_min != inf:
-			rate_min = inf
-			i_min = 0
-			j_min = 0
-			for i in range(self.height):
-				for j in range(self.width):
-					if p[i] != 0 and c[j] != 0 and self.table[i][j].rate < rate_min:
-						rate_min = self.table[i][j].rate
-						i_min = i
-						j_min = j
-			if rate_min != inf:
-				supply = min(p[i_min], c[j_min])
-				self.table[i_min][j_min].supply = supply
-				p[i_min] -= supply
-				c[j_min] -= supply
+		p = list(self.providers)
+		c = list(self.customers)
+		for i in range(self.height):
+			for j in range(self.width):
+				if p[i] != 0 and c[j] != 0:
+					supply = min(p[i], c[j])
+					self.table[i][j].supply = supply
+					p[i] -= supply
+					c[j] -= supply
 
 	def fix_degeneracy(self):
 		pass

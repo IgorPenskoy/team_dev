@@ -48,8 +48,8 @@ class TestProblem(unittest.TestCase):
 
 	def test_build_table_8(self):
 		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
-		for i in range(problem.width):
-			for j in range(problem.height):
+		for i in range(problem.height):
+			for j in range(problem.width):
 				self.assertEqual(problem.table[i][j].rate, problem.rates[i][j])
 		self.assertEqual(problem.width, 3);
 		self.assertEqual(problem.height, 3);
@@ -86,10 +86,28 @@ class TestProblem(unittest.TestCase):
 	def test_check_closeness_2(self):
 		problem = Problem([10, 5, 3], [9, 3, 10], [[1,1,1],[1,1,1],[1,1,1]])
 		self.assertEqual(problem.check_closeness(), 4)
-		
-	def test_make_basic_plan(self):
-		problem = Problem([10, 5, 3], [9, 3, 6], [[1,1,1],[1,1,1],[1,1,1]])
+
+	def test_make_basic_plan_1(self):
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
 		problem.make_basic_plan()
+		supply_result = [[25, 5, None], [None, 10, 30], [None, None, 20]]
+		flag = True
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply != supply_result[i][j]:
+					flag = False
+		self.assertTrue(flag)
+
+	def test_make_basic_plan_2(self):
+		problem = Problem([25, 15, 0], [30, 0, 10], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		problem.make_basic_plan()
+		supply_result = [[25, 5, None], [None, None, None], [None, 10, None]]
+		flag = True
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply != supply_result[i][j]:
+					flag = False
+		self.assertTrue(flag)
 
 	def test_fix_degeneracy(self):
 		problem = Problem()
