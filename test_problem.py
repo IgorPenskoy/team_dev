@@ -220,8 +220,14 @@ class TestProblem(unittest.TestCase):
 		problem.fix_degeneracy()
 		self.assertEqual(problem.get_plan_potentials(), ([0, -1, 1], [2, 4, 3]))
 
-	def test_get_expenses(self):
-		problem = Problem()
+	def test_get_expenses_1(self):
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		problem.make_basic_plan()
+		problem.fix_degeneracy()
+		self.assertEqual(problem.get_expenses(), 240)
+
+	def test_get_expenses_2(self):
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
 		self.assertEqual(problem.get_expenses(), 0)
 
 if __name__ == '__main__':
