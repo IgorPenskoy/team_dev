@@ -16,8 +16,18 @@ class Problem:
 		self.build_table()
 
 	def solve(self):
-		return 0
-		
+		if self.providers is None or self.customers is None or self.rates is None:
+			return 0
+		self.make_closeness()
+		self.make_basic_plan()
+		self.fix_degeneracy()
+		before_costs = self.get_expenses()
+		while not self.check_optimality():
+			self.make_optimality()
+			self.fix_degeneracy()
+		self.common_costs = self.get_expenses()
+		return before_costs - self.common_costs
+
 	def build_table(self):
 		if self.customers is None:
 			self.width = 0
@@ -163,6 +173,10 @@ class Problem:
 						elif providers_potential[i] is None and customers_potential[j] is not None:
 							providers_potential[i] = self.table[i][j].rate - customers_potential[j]
 		return providers_potential, customers_potential
-		
+
 	def get_expenses(self):
-		return 0
+		result = 0
+		for i in range(self.height):
+			for j in range(self.width):
+				result += self.items[i][j].get_traffic()
+		return result
