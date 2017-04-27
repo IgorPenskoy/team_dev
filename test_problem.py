@@ -115,7 +115,7 @@ class TestProblem(unittest.TestCase):
 		
 	def test_check_degeneracy(self):
 		problem = Problem()
-		self.assertFalse(problem.check_degeneracy())
+		self.assertEqual(problem.check_degeneracy(), -1)
 
 	def test_make_optimality(self):
 		problem = Problem()

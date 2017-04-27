@@ -63,7 +63,12 @@ class Problem:
 		pass
 		
 	def check_degeneracy(self):
-		return False
+		self.basis_item_count = 0
+		for i in range(self.height):
+			for j in range(self.width):
+				if self.items[i][j].supply is not None:
+					self.basis_item_count += 1
+		return self.width + self.height - self.basis_item_count - 1
 
 	def make_optimality(self):
 		pass
