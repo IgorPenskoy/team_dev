@@ -84,13 +84,85 @@ class Problem:
 		return self.width + self.height - self.basis_item_count - 1
 
 	def make_optimality(self):
-		pass
-	
+		delta_min = inf
+		u = v = 0
+		for i in range(self.height):
+			for j in range(self.width):
+				if self.table[i][j].delta < delta_min:
+					delta_min = self.table[i][j].delta
+					u = i
+					v = j
+		if delta_min < 0:
+			self.table[u][v].supply = 0
+			cycle = self.find_cycle(u, v)
+			supply_min = inf
+			for w in range(1, len(cycle), 2):
+				tmp = self.table[cycle[w][0]][cycle[w][1]].supply
+				if tmp < supply_min:
+					supply_min = tmp
+			for w in range(1, len(cycle), 2):
+				self.table[cycle[w][0]][cycle[w][1]].supply -= supply_min
+				self.table[cycle[w - 1][0]][cycle[w - 1][1]].supply += supply_min
+
+	def find_cycle(self, i, j):
+		cycle = [[i, j]]
+		if self.look_horizontally(cycle, i, j, i, j):
+			return cycle
+		else:
+			return []
+
+	def look_horizontally(self, cycle, u, v, u1, v1):
+		for i in range(0, self.width):
+			if i != v and self.table[u][i].supply is not None:
+				if i == v1:
+					cycle.append([u, i])
+					return True  # complete circuit
+				if self.look_vertically(cycle, u, i, u1, v1):
+					cycle.append([u, i])
+					return True
+		return False  # not found
+
+	def look_vertically(self, cycle, u, v, u1, v1):
+		for i in range(0, self.height):
+			if i != u and self.table[i][v].supply is not None:
+				if self.look_horizontally(cycle, i, v, u1, v1):
+					cycle.append([i, v])
+					return True
+		return False  # not found
+
 	def check_optimality(self):
-		return True
-		
+		providers_potential, customers_potential = self.get_plan_potentials()
+		for i in range(len(providers_potential)):
+			if providers_potential[i] is None:
+				providers_potential[i] = 0
+		for i in range(len(customers_potential)):
+			if customers_potential[i] is None:
+				customers_potential[i] = 0
+		flag = True
+		for i in range(self.height):
+			for j in range(self.width):
+				self.table[i][j].delta = self.table[i][j].rate - (providers_potential[i] + customers_potential[j])
+				if self.table[i][j].delta < 0:
+					flag = False
+		return flag
+
 	def get_plan_potentials(self):
-		pass
+		providers_potential = [None for x in range(self.height)]
+		customers_potential = [None for x in range(self.width)]
+		providers_potential[0] = 0
+		flag = 1
+		while flag:
+			flag = 0
+			for i in range(self.height):
+				for j in range(self.width):
+					if self.table[i][j].supply is not None:
+						if providers_potential[i] is None and customers_potential[j] is None:
+							flag = 1
+						elif providers_potential[i] is not None and customers_potential[j] is None:
+							customers_potential[j] = self.table[i][j].rate - providers_potential[i]
+						elif providers_potential[i] is None and customers_potential[j] is not None:
+							providers_potential[i] = self.table[i][j].rate - customers_potential[j]
+		return providers_potential, customers_potential
 		
 	def get_expenses(self):
 		return 0
