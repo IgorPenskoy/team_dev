@@ -51,11 +51,14 @@ class Problem:
 		balance = self.check_closeness()
 		if balance > 0:
 			self.customers.append(balance)
-			for i in range(len(self.rates)):
-				self.rates[i].append(0)
+			self.width += 1
+			for i in range(self.height):
+				self.table[i].append(TableItem(0))
 		elif balance < 0:
 			self.providers.append(-balance)
-			self.rates.append([0 for x in range(len(self.customers))])
+			self.height += 1
+			self.table.append([TableItem(0) for x in range(self.width)])
+			self.rates.append([0 for x in range(self.width)])
 
 	def check_closeness(self):
 		return sum(self.providers) - sum(self.customers)
@@ -142,12 +145,6 @@ class Problem:
 
 	def check_optimality(self):
 		providers_potential, customers_potential = self.get_plan_potentials()
-		for i in range(len(providers_potential)):
-			if providers_potential[i] is None:
-				providers_potential[i] = 0
-		for i in range(len(customers_potential)):
-			if customers_potential[i] is None:
-				customers_potential[i] = 0
 		flag = True
 		for i in range(self.height):
 			for j in range(self.width):
@@ -161,7 +158,8 @@ class Problem:
 		customers_potential = [None for x in range(self.width)]
 		providers_potential[0] = 0
 		flag = 1
-		while flag:
+		n = 1000
+		while flag and n < 1000:
 			flag = 0
 			for i in range(self.height):
 				for j in range(self.width):
@@ -172,11 +170,17 @@ class Problem:
 							customers_potential[j] = self.table[i][j].rate - providers_potential[i]
 						elif providers_potential[i] is None and customers_potential[j] is not None:
 							providers_potential[i] = self.table[i][j].rate - customers_potential[j]
+		for i in range(self.height):
+			if providers_potential[i] is None:
+				providers_potential[i] = 0
+		for i in range(self.width):
+			if customers_potential[i] is None:
+				customers_potential[i] = 0
 		return providers_potential, customers_potential
 
 	def get_expenses(self):
 		result = 0
 		for i in range(self.height):
 			for j in range(self.width):
-				result += self.items[i][j].get_traffic()
+				result += self.table[i][j].get_traffic()
 		return result
