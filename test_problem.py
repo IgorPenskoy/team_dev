@@ -174,18 +174,52 @@ class TestProblem(unittest.TestCase):
 		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
 		self.assertEqual(problem.check_degeneracy(), 5)
 
-	def test_make_optimality(self):
-		problem = Problem()
-		problem.make_optimality()
-	
-	def test_check_optimality(self):
+	def test_make_optimality_1(self):
 		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
-		self.assertTrue(problem.check_optimality())
+		problem.make_basic_plan()
+		problem.fix_degeneracy()
+		problem.check_optimality()
+		problem.make_optimality()
+		problem.fix_degeneracy()
+		items_result = [[25, 5, None], [None, None, 40], [None, 10, 10]]
+		flag = True
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply != items_result[i][j]:
+					flag = False
+		self.assertTrue(flag)
+
+	def test_make_optimality_2(self):
+		problem = Problem([30, 30], [30, 30], [[1, 1], [1, 1]])
+		problem.make_basic_plan()
+		problem.fix_degeneracy()
+		problem.check_optimality()
+		problem.make_optimality()
+		problem.fix_degeneracy()
+		items_result = [[30, EPSILON], [None, 30]]
+		flag = True
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply != items_result[i][j]:
+					flag = False
+		self.assertTrue(flag)
+
+	def test_check_optimality_1(self):
+		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
+		problem.make_basic_plan()
+		self.assertEqual(problem.check_optimality(), False)
+
+	def test_check_optimality_2(self):
+		problem = Problem([30, 30], [30, 30], [[1, 1], [1, 1]])
+		problem.make_basic_plan()
+		self.assertEqual(problem.check_optimality(), True)
 		
 	def test_get_plan_potentials(self):
 		problem = Problem([25, 15, 50], [30, 40, 20], [[2, 4, 1], [1, 3, 2], [5, 2, 4]])
-		problem.get_plan_potentials()
-		
+		problem.make_basic_plan()
+		problem.fix_degeneracy()
+		self.assertEqual(problem.get_plan_potentials(), ([0, -1, 1], [2, 4, 3]))
+
 	def test_get_expenses(self):
 		problem = Problem()
 		self.assertEqual(problem.get_expenses(), 0)
