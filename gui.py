@@ -1,11 +1,13 @@
 from PyQt5 import QtCore, QtGui,QtWidgets
 from problem import *
 import random
+import matplotlib.pyplot as plt
+import networkx as nx
 
 class Ui_MainWindow(object):
 	def setupUi(self, MainWindow):
 		MainWindow.setObjectName("MainWindow")
-		MainWindow.resize(522, 424)
+		MainWindow.setFixedSize(1200, 500)
 		self.centralwidget = QtWidgets.QWidget(MainWindow)
 		self.centralwidget.setObjectName("centralwidget")
 		self.rates_tablewidget = QtWidgets.QTableWidget(self.centralwidget)
@@ -97,6 +99,9 @@ class Ui_MainWindow(object):
 		self.alert_label = QtWidgets.QLabel(self.centralwidget)
 		self.alert_label.setGeometry(QtCore.QRect(220, 350, 200, 20))
 		self.alert_label.setText("")
+		self.pic = QtWidgets.QLabel(self.centralwidget)
+		self.pic.setGeometry(QtCore.QRect(550, 10, 1100, 500))
+		self.rates_lable.setObjectName("pic")
 		self.alert_label.setObjectName("alert_label")
 		self.layoutWidget.raise_()
 		self.layoutWidget.raise_()
@@ -194,6 +199,48 @@ class Ui_MainWindow(object):
 					flag = False
 		return flag
 
+	def graph(self, problem):
+		G = nx.Graph()
+		for i in range(problem.height + problem.width):
+			G.add_node(i)
+		pos = nx.spring_layout(G)
+		node_list_providers = list()
+		labels = dict()
+		for i in range(problem.height):
+			labels[i] = str(i + 1)
+			node_list_providers.append(i)
+
+		node_list_customers = list()
+		for i in range(problem.height, problem.height + problem.width):
+			labels[i] = str(i - problem.height + 1)
+			node_list_customers.append(i)
+
+		edge_list = list()
+		edge_labels_list = dict()
+		for i in range(problem.height):
+			for j in range(problem.width):
+				if problem.table[i][j].supply is not None:
+					edge_list.append((i, j + problem.height))
+					edge_labels_list[(i, j + problem.height)] = str(problem.table[i][j].supply)
+
+		# nodes
+		nx.draw_networkx_nodes(G,pos, nodelist=node_list_providers, node_color='r', node_size=100, alpha=0.8)
+		nx.draw_networkx_nodes(G,pos, nodelist=node_list_customers, node_color='b', node_size=100, alpha=0.8)
+
+		# labels
+		nx.draw_networkx_labels(G,pos,labels,font_size=12, font_color='k', font_weight='bold')
+
+		#edges
+		nx.draw_networkx_edges(G,pos,edgelist=edge_list,arrows=True, style = 'dashed')
+
+		#edge labels
+		nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels_list)
+		plt.axis("off")
+		plt.savefig("traffic.png")
+		plt.clf()
+		pixmap = QtGui.QPixmap("traffic.png")
+		self.pic.setPixmap(pixmap)
+
 	def calculation(self):
 		self.alert_label.setText("")
 		rates = list()
@@ -232,6 +279,7 @@ class Ui_MainWindow(object):
 				self.providers_tablewidget.setRowCount(problem.height)
 				self.providers_tablewidget.setItem(0, problem.height - 1, QtWidgets.QTableWidgetItem(str(problem.providers[problem.height - 1])))
 			self.commoncosts_label.setText('Общие затраты: ' + str(problem.common_costs))
+			self.graph(problem)
 		else:
 			self.alert_label.setText("НЕКОРРЕКТНЫЕ ДАННЫЕ")
 
