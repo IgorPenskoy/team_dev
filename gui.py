@@ -155,7 +155,7 @@ class Ui_MainWindow(object):
 				flag = False
 		for i in range(self.customers_tablewidget.columnCount()):
 			try:
-				numb = float(self.providers_tablewidget.item(i, 0).text())
+				numb = float(self.customers_tablewidget.item(i, 0).text())
 				if numb < 0:
 					flag = False
 			except ValueError:
