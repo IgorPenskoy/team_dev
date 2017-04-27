@@ -5,4 +5,7 @@ class TableItem:
 		self.delta = delta
 
 	def get_traffic(self):
-		return 0
+		if self.rate is None or self.supply is None:
+			return 0
+		else:
+			return self.rate * self.supply
