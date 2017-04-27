@@ -62,9 +62,13 @@ class TestProblem(unittest.TestCase):
 		problem = Problem([10, 5, 3], [9, 3, 6], [[1,1,1],[1,1,1],[1,1,1]])
 		problem.make_closeness()
 
-	def test_check_closeness(self):
+	def test_check_closeness_1(self):
 		problem = Problem([10, 5, 3], [9, 3, 6], [[1,1,1],[1,1,1],[1,1,1]])
 		self.assertEqual(problem.check_closeness(), 0)
+
+	def test_check_closeness_2(self):
+		problem = Problem([10, 5, 3], [9, 3, 10], [[1,1,1],[1,1,1],[1,1,1]])
+		self.assertEqual(problem.check_closeness(), 4)
 		
 	def test_make_basic_plan(self):
 		problem = Problem([10, 5, 3], [9, 3, 6], [[1,1,1],[1,1,1],[1,1,1]])
