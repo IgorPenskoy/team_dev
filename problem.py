@@ -1,7 +1,7 @@
 from table_item import *
 from math import inf
 
-EPSILON = 0.01
+EPSILON = 0.001
 N = 100
 
 class Problem:
@@ -29,7 +29,8 @@ class Problem:
 			self.fix_degeneracy()
 			n += 1
 		self.common_costs = self.get_expenses()
-		return before_costs - self.common_costs
+		self.result_rounding()
+		return round(before_costs - self.common_costs, 2)
 
 	def build_table(self):
 		if self.customers is None:
@@ -122,9 +123,12 @@ class Problem:
 
 	def find_cycle(self, i, j):
 		cycle = [[i, j]]
-		if self.look_horizontally(cycle, i, j, i, j):
-			return cycle
-		else:
+		try: 
+			if self.look_horizontally(cycle, i, j, i, j):
+				return cycle
+			else:
+				return []
+		except RecursionError:
 			return []
 
 	def look_horizontally(self, cycle, u, v, u1, v1):
@@ -176,7 +180,6 @@ class Problem:
 						elif providers_potential[i] is None and customers_potential[j] is not None:
 							flag_2 = True
 							providers_potential[i] = self.table[i][j].rate - customers_potential[j]
-		print('potentials_gone')
 		for i in range(self.height):
 			if providers_potential[i] is None:
 				providers_potential[i] = 0
@@ -191,3 +194,9 @@ class Problem:
 			for j in range(self.width):
 				result += self.table[i][j].get_traffic()
 		return result
+
+	def result_rounding(self):
+		for i in range(self.height):
+			for j in range(self.width):
+				if self.table[i][j].supply is not None:
+					self.table[i][j].supply = round(self.table[i][j].supply, 2)
