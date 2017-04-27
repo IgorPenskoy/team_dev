@@ -2,6 +2,7 @@ from table_item import *
 from math import inf
 
 EPSILON = 0.01
+N = 100
 
 class Problem:
 	def __init__(self, customers = None, providers = None, rates = None):
@@ -22,9 +23,11 @@ class Problem:
 		self.make_basic_plan()
 		self.fix_degeneracy()
 		before_costs = self.get_expenses()
-		while not self.check_optimality():
+		n = 0
+		while not self.check_optimality() and n < N:
 			self.make_optimality()
 			self.fix_degeneracy()
+			n += 1
 		self.common_costs = self.get_expenses()
 		return before_costs - self.common_costs
 
@@ -157,19 +160,23 @@ class Problem:
 		providers_potential = [None for x in range(self.height)]
 		customers_potential = [None for x in range(self.width)]
 		providers_potential[0] = 0
-		flag = 1
-		n = 1000
-		while flag and n < 1000:
-			flag = 0
+		flag_1 = True
+		flag_2 = True
+		while flag_1 and flag_2:
+			flag_1 = False
+			flag_2 = False
 			for i in range(self.height):
 				for j in range(self.width):
 					if self.table[i][j].supply is not None:
 						if providers_potential[i] is None and customers_potential[j] is None:
-							flag = 1
+							flag_1 = True
 						elif providers_potential[i] is not None and customers_potential[j] is None:
+							flag_2 = True
 							customers_potential[j] = self.table[i][j].rate - providers_potential[i]
 						elif providers_potential[i] is None and customers_potential[j] is not None:
+							flag_2 = True
 							providers_potential[i] = self.table[i][j].rate - customers_potential[j]
+		print('potentials_gone')
 		for i in range(self.height):
 			if providers_potential[i] is None:
 				providers_potential[i] = 0
