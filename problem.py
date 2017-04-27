@@ -26,13 +26,14 @@ class Problem:
 		else:
 			self.height = len(self.providers)
 		self.table = [[TableItem() for x in range(self.width)] for y in range(self.height)]
-		self.basis_item_count = 0
 		try:
 			for i in range(self.height):
 				for j in range(self.width):
 					self.table[i][j].rate = self.rates[i][j]
 		except IndexError:
-			print('Rates table is not in appropriate size')
+			raise IndexError('Rates table is not in appropriate size')
+		except TypeError:
+			raise TypeError('Rates is None')
 
 	def make_closeness(self):
 		balance = self.check_closeness()
