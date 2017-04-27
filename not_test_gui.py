@@ -56,3 +56,56 @@ def test_normal(qtbot):
 		for j in range(ui.rates_tablewidget.columnCount()):
 			assert ui.traffic_tablewidget.item(i, j).text() == item_results[i][j]
 	assert ui.commoncosts_label.text() == label_result
+
+def test_one_item(qtbot):
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    qtbot.addWidget(ui)
+    ui.rates_tablewidget.setRowCount(1)
+    ui.rates_tablewidget.setColumnCount(1)
+    ui.customers_tablewidget.setColumnCount(1)
+    ui.providers_tablewidget.setRowCount(1)
+    qtbot.mouseClick(ui.random_pushbutton, QtCore.Qt.LeftButton)
+    try:
+        qtbot.mouseClick(ui.calculation_pushbutton, QtCore.Qt.LeftButton)
+    except Exception:
+        assert 0
+
+
+def test_ten_items(qtbot):
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    qtbot.addWidget(ui)
+    ui.rates_tablewidget.setRowCount(10)
+    ui.rates_tablewidget.setColumnCount(10)
+    ui.customers_tablewidget.setColumnCount(10)
+    ui.providers_tablewidget.setRowCount(10)
+    qtbot.mouseClick(ui.random_pushbutton, QtCore.Qt.LeftButton)
+    try:
+        qtbot.mouseClick(ui.calculation_pushbutton, QtCore.Qt.LeftButton)
+    except Exception:
+        assert 0
+
+
+def test_all_zero_items(qtbot):
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    qtbot.addWidget(ui)
+    ui.rates_tablewidget.setRowCount(10)
+    ui.rates_tablewidget.setColumnCount(10)
+    ui.customers_tablewidget.setColumnCount(10)
+    ui.providers_tablewidget.setRowCount(10)
+    for i in range(ui.providers_tablewidget.rowCount()):
+        ui.providers_tablewidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str(0)))
+    for i in range(ui.customers_tablewidget.columnCount()):
+        ui.customers_tablewidget.setItem(0, i, QtWidgets.QTableWidgetItem(str(0)))
+    for i in range(ui.rates_tablewidget.rowCount()):
+        for j in range(ui.rates_tablewidget.columnCount()):
+            ui.rates_tablewidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(0)))
+    try:
+        qtbot.mouseClick(ui.calculation_pushbutton, QtCore.Qt.LeftButton)
+    except Exception:
+        assert 0
