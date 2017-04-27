@@ -1,6 +1,8 @@
 from table_item import *
 from math import inf
 
+EPSILON = 0.01
+
 class Problem:
 	def __init__(self, customers = None, providers = None, rates = None):
 		self.customers = customers
@@ -60,13 +62,24 @@ class Problem:
 					c[j] -= supply
 
 	def fix_degeneracy(self):
-		pass
-		
+		for i in range(self.height):
+			for j in range(self.width):
+				if self.table[i][j].supply == 0:
+					self.table[i][j].supply = None
+		degeneracy = self.check_degeneracy()
+		for i in range(self.height):
+			for j in range(self.width):
+				if self.table[i][j].supply is None and degeneracy > 0:
+					self.table[i][j].supply = EPSILON
+					self.providers[i] += EPSILON
+					self.customers[j] += EPSILON
+					degeneracy -= 1
+
 	def check_degeneracy(self):
 		self.basis_item_count = 0
 		for i in range(self.height):
 			for j in range(self.width):
-				if self.items[i][j].supply is not None:
+				if self.table[i][j].supply is not None:
 					self.basis_item_count += 1
 		return self.width + self.height - self.basis_item_count - 1
 
