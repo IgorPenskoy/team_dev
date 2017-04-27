@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui,QtWidgets
 from problem import *
+import random
 
 class Ui_MainWindow(object):
 	def setupUi(self, MainWindow):
@@ -97,11 +98,6 @@ class Ui_MainWindow(object):
 		self.alert_label.setGeometry(QtCore.QRect(220, 350, 200, 20))
 		self.alert_label.setText("")
 		self.alert_label.setObjectName("alert_label")
-		self.comboBox = QtWidgets.QComboBox(self.centralwidget)
-		self.comboBox.setGeometry(QtCore.QRect(220, 240, 211, 27))
-		self.comboBox.setObjectName("comboBox")
-		self.comboBox.addItem("")
-		self.comboBox.addItem("")
 		self.layoutWidget.raise_()
 		self.layoutWidget.raise_()
 		self.rates_tablewidget.raise_()
@@ -114,7 +110,6 @@ class Ui_MainWindow(object):
 		self.random_pushbutton.raise_()
 		self.commoncosts_label.raise_()
 		self.alert_label.raise_()
-		self.comboBox.raise_()
 		MainWindow.setCentralWidget(self.centralwidget)
 		self.menubar = QtWidgets.QMenuBar(MainWindow)
 		self.menubar.setGeometry(QtCore.QRect(0, 0, 522, 25))
@@ -128,6 +123,7 @@ class Ui_MainWindow(object):
 		QtCore.QMetaObject.connectSlotsByName(MainWindow)
 		self.providers_spinbox.valueChanged.connect(self.providers_count_change)
 		self.customers_spinbox.valueChanged.connect(self.customers_count_change)
+		self.random_pushbutton.clicked.connect(self.random_fill)
 		self.calculation_pushbutton.clicked.connect(self.calculation)
 
 	def providers_count_change(self):
@@ -139,6 +135,17 @@ class Ui_MainWindow(object):
 		self.customers_tablewidget.setColumnCount(self.customers_spinbox.value())
 		self.rates_tablewidget.setColumnCount(self.customers_spinbox.value())
 		self.traffic_tablewidget.setColumnCount(self.customers_spinbox.value())
+
+	def random_fill(self):
+		self.rates_tablewidget.setRowCount(self.providers_tablewidget.rowCount())
+		self.rates_tablewidget.setColumnCount(self.customers_tablewidget.columnCount())
+		for i in range(self.providers_tablewidget.rowCount()):
+			self.providers_tablewidget.setItem(i, 0, QtWidgets.QTableWidgetItem(str(random.randint(1, 100))))
+		for i in range(self.customers_tablewidget.columnCount()):
+			self.customers_tablewidget.setItem(0, i, QtWidgets.QTableWidgetItem(str(random.randint(1, 100))))
+		for i in range(self.rates_tablewidget.rowCount()):
+			for j in range(self.rates_tablewidget.columnCount()):
+				self.rates_tablewidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(random.randint(1, 10))))
 
 	def data_check(self):
 		flag = True
@@ -155,7 +162,7 @@ class Ui_MainWindow(object):
 				flag = False
 		for i in range(self.customers_tablewidget.columnCount()):
 			try:
-				numb = float(self.customers_tablewidget.item(i, 0).text())
+				numb = float(self.customers_tablewidget.item(0, i).text())
 				if numb < 0:
 					flag = False
 			except ValueError:
@@ -207,5 +214,3 @@ class Ui_MainWindow(object):
 		self.customers_label.setText(_translate("MainWindow", "Потребности"))
 		self.providers_label.setText(_translate("MainWindow", "Запасы"))
 		self.traffic_label.setText(_translate("MainWindow", "Перевозки"))
-		self.comboBox.setItemText(0, _translate("MainWindow", "Северо-западного угла"))
-		self.comboBox.setItemText(1, _translate("MainWindow", "Минимального элемента"))
