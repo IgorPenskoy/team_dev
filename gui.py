@@ -4,7 +4,13 @@ import random
 import matplotlib.pyplot as plt
 import networkx as nx
 
+##@brief A class for form window
+#
 class Ui_MainWindow(object):
+	## Place elements on form, connect events and holders
+	#
+	#@param self class pointer
+	#@param MainWindow a window instance
 	def setupUi(self, MainWindow):
 		MainWindow.setObjectName("MainWindow")
 		MainWindow.setFixedSize(1200, 500)
@@ -131,16 +137,25 @@ class Ui_MainWindow(object):
 		self.random_pushbutton.clicked.connect(self.random_fill)
 		self.calculation_pushbutton.clicked.connect(self.calculation)
 
+	## Change a digit in providers edit holder
+	#
+	#@param self class pointer
 	def providers_count_change(self):
 		self.providers_tablewidget.setRowCount(self.providers_spinbox.value())
 		self.rates_tablewidget.setRowCount(self.providers_spinbox.value())
 		self.traffic_tablewidget.setRowCount(self.providers_spinbox.value())
 
+	## Change a digit in customers edit holder
+	#
+	#@param self class pointer
 	def customers_count_change(self):
 		self.customers_tablewidget.setColumnCount(self.customers_spinbox.value())
 		self.rates_tablewidget.setColumnCount(self.customers_spinbox.value())
 		self.traffic_tablewidget.setColumnCount(self.customers_spinbox.value())
-
+		
+	## Click on random fill button holder
+	#
+	#@param self class pointer
 	def random_fill(self):
 		self.providers_tablewidget.setRowCount(self.providers_spinbox.value())
 		self.rates_tablewidget.setRowCount(self.providers_spinbox.value())
@@ -160,7 +175,10 @@ class Ui_MainWindow(object):
 		for i in range(self.rates_tablewidget.rowCount()):
 			for j in range(self.rates_tablewidget.columnCount()):
 				self.rates_tablewidget.setItem(i, j, QtWidgets.QTableWidgetItem(str(random.randint(1, 10))))
-
+	
+	## Check input data
+	#
+	#@param self class pointer
 	def data_check(self):
 		flag = True
 		for i in range(self.providers_tablewidget.rowCount()):
@@ -198,7 +216,10 @@ class Ui_MainWindow(object):
 				except AttributeError:
 					flag = False
 		return flag
-
+		
+	## Draw transportation graph
+	#
+	#@param self class pointer
 	def graph(self, problem):
 		G = nx.Graph()
 		for i in range(problem.height + problem.width):
@@ -241,6 +262,9 @@ class Ui_MainWindow(object):
 		pixmap = QtGui.QPixmap("traffic.png")
 		self.pic.setPixmap(pixmap)
 
+	## Click on calculation buuton holder
+	#
+	#@param self class pointer
 	def calculation(self):
 		self.alert_label.setText("")
 		rates = list()
@@ -283,6 +307,10 @@ class Ui_MainWindow(object):
 		else:
 			self.alert_label.setText("НЕКОРРЕКТНЫЕ ДАННЫЕ")
 
+	## Set labels for objects ob form
+	#
+	#@param self class pointer
+	#@param MainWindow a window instance
 	def retranslateUi(self, MainWindow):
 		_translate = QtCore.QCoreApplication.translate
 		MainWindow.setWindowTitle(_translate("MainWindow", "Транспортная задача"))

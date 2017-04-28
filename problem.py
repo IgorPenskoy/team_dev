@@ -1,21 +1,54 @@
 from table_item import *
 from math import inf
 
+## Accurancy of calculation
+#
 EPSILON = 0.001
+
+## Number of optimization iterations
+#
 N = 100
 
+##@brief A class for transportation problem
+#
 class Problem:
+	## Constructor
+	#
+	#@param self class pointer
+	#@param customers a list of customers demands
+	#@param providers a list of providers opportunities
+	#@param rates a matrix of rates for piece of transportation
 	def __init__(self, customers = None, providers = None, rates = None):
+		## @var customers
+		# a list of customers demands
 		self.customers = customers
+		## @var  providers
+		# a list of providers opportunities
 		self.providers = providers
+		## @var rates
+		# a matrix of rates for piece of transportation
 		self.rates = rates
+		## @var common_costs
+		# total cost of transportaions
 		self.common_costs = None
+		## @var table
+		# table of transportations
 		self.table = None
+		## @var width
+		# width of transportations table
 		self.width = None
+		## @var height
+		# height of transportations table
 		self.height = None
+		## @var .basis_item_count
+		# a count of basis elements in basic plan
 		self.basis_item_count = 0
 		self.build_table()
-
+	
+	## Calculate a table of transportations and total cost of transportations
+	#
+	#@param self class pointer
+	#@return total costs of transportation
 	def solve(self):
 		if self.providers is None or self.customers is None or self.rates is None:
 			return 0
@@ -32,6 +65,9 @@ class Problem:
 		self.result_rounding()
 		return round(before_costs - self.common_costs, 2)
 
+	## Init a table of transportation
+	#
+	#@param self class pointer
 	def build_table(self):
 		if self.customers is None:
 			self.width = 0
@@ -51,6 +87,9 @@ class Problem:
 		except TypeError:
 			raise TypeError('Rates is None')
 
+	## Make a transportation task closed
+	#
+	#@param self class pointer
 	def make_closeness(self):
 		balance = self.check_closeness()
 		if balance > 0:
@@ -64,9 +103,16 @@ class Problem:
 			self.table.append([TableItem(0) for x in range(self.width)])
 			self.rates.append([0 for x in range(self.width)])
 
+	## Check a transportaion task for closenes
+	#
+	#@param self class pointer
+	#@return balance of transportation
 	def check_closeness(self):
 		return sum(self.providers) - sum(self.customers)
-		
+
+	## Make a basic plan of transportation task
+	#
+	#@param self class pointer
 	def make_basic_plan(self):
 		p = list(self.providers)
 		c = list(self.customers)
@@ -78,6 +124,9 @@ class Problem:
 					p[i] -= supply
 					c[j] -= supply
 
+	## Make plan non degenerative
+	#
+	#@param self class pointer
 	def fix_degeneracy(self):
 		for i in range(self.height):
 			for j in range(self.width):
@@ -92,6 +141,10 @@ class Problem:
 					self.customers[j] += EPSILON
 					degeneracy -= 1
 
+	## Check a basic plan for degeneracy
+	#
+	#@param self class pointer
+	#@return count of needed basis elements
 	def check_degeneracy(self):
 		self.basis_item_count = 0
 		for i in range(self.height):
@@ -100,6 +153,9 @@ class Problem:
 					self.basis_item_count += 1
 		return self.width + self.height - self.basis_item_count - 1
 
+	## Optimize basic plan
+	#
+	#@param self class pointer
 	def make_optimality(self):
 		delta_min = inf
 		u = v = 0
@@ -121,6 +177,12 @@ class Problem:
 				self.table[cycle[w][0]][cycle[w][1]].supply -= supply_min
 				self.table[cycle[w - 1][0]][cycle[w - 1][1]].supply += supply_min
 
+	## Find a cycle in basic plan
+	#
+	#@param self class pointer
+	#@param i row in transportation table
+	#@param j column in transportation table 
+	#@return cycle or empty list
 	def find_cycle(self, i, j):
 		cycle = [[i, j]]
 		try: 
@@ -131,6 +193,14 @@ class Problem:
 		except RecursionError:
 			return []
 
+	## Find a horizontal path in transportation table for cycle
+	#
+	#@param self class pointer
+	#@param u row in transportation table - begin of path
+	#@param v column in transportation table - begin of path
+	#@param u1 row in transportation table - end of path
+	#@param v1 column in transportation table - end of path
+	#@return True if cycle or False if not
 	def look_horizontally(self, cycle, u, v, u1, v1):
 		for i in range(0, self.width):
 			if i != v and self.table[u][i].supply is not None:
@@ -141,7 +211,15 @@ class Problem:
 					cycle.append([u, i])
 					return True
 		return False  # not found
-
+		
+	## Find a vertical path in transportation table for cycle
+	#
+	#@param self class pointer
+	#@param u row in transportation table - begin of path
+	#@param v column in transportation table - begin of path
+	#@param u1 row in transportation table - end of path
+	#@param v1 column in transportation table - end of path
+	#@return True if cycle or False if not
 	def look_vertically(self, cycle, u, v, u1, v1):
 		for i in range(0, self.height):
 			if i != u and self.table[i][v].supply is not None:
@@ -150,6 +228,10 @@ class Problem:
 					return True
 		return False  # not found
 
+	## Check a basic plan for optimality
+	#
+	#@param self class pointer
+	#@return True - if optimal, False - if not optimal
 	def check_optimality(self):
 		providers_potential, customers_potential = self.get_plan_potentials()
 		flag = True
@@ -159,7 +241,10 @@ class Problem:
 				if self.table[i][j].delta < 0:
 					flag = False
 		return flag
-
+	## Get basic plan potentials
+	#
+	#@param self class pointer
+	#@return two lists of plan potentials
 	def get_plan_potentials(self):
 		providers_potential = [None for x in range(self.height)]
 		customers_potential = [None for x in range(self.width)]
@@ -188,13 +273,20 @@ class Problem:
 				customers_potential[i] = 0
 		return providers_potential, customers_potential
 
+	## Get expenses for trasportations
+	#
+	#@param self class pointer
+	#@return cost of transportations
 	def get_expenses(self):
 		result = 0
 		for i in range(self.height):
 			for j in range(self.width):
 				result += self.table[i][j].get_traffic()
 		return result
-
+		
+	## Rounding of supplies
+	#
+	#@param self class pointer
 	def result_rounding(self):
 		for i in range(self.height):
 			for j in range(self.width):
