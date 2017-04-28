@@ -1,2 +1,6 @@
 *.pyc
 .cache/
+.idea/
+*.png
+debug.log
+docs/
